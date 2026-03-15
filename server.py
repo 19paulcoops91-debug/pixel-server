@@ -23,6 +23,11 @@ def pixel():
     # Serve the transparent PNG
     return send_file("transparent.png", mimetype="image/png")
 
+# 👉 ADD THIS NEW ROUTE HERE
+@app.route("/debug")
+def debug():
+    return dict(request.headers)
+
 @app.route("/")
 def home():
     return "Pixel server is running."
