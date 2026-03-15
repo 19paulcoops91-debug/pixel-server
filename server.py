@@ -8,12 +8,16 @@ LOG_FILE = "log.txt"
 
 @app.route("/pixel")
 def pixel():
+    # Get real client IP (Render passes it in X-Forwarded-For)
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    ua = request.headers.get("User-Agent")
+
     # Log request details
     with open(LOG_FILE, "a") as f:
         f.write(
             f"{datetime.datetime.now()} | "
-            f"IP: {request.remote_addr} | "
-            f"UA: {request.headers.get('User-Agent')}\n"
+            f"IP: {ip} | "
+            f"UA: {ua}\n"
         )
 
     # Serve the transparent PNG
