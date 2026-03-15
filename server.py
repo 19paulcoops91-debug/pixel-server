@@ -10,11 +10,11 @@ LOG_FILE = "log.txt"
 def pixel():
     # Get real client IP (Render passes it in X-Forwarded-For)
     ip = (
-    request.headers.get("True-Client-Ip")
-    or request.headers.get("Cf-Connecting-Ip")
-    or request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
-    or request.remote_addr
-)
+        request.headers.get("True-Client-Ip")
+        or request.headers.get("Cf-Connecting-Ip")
+        or request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+        or request.remote_addr
+    )
     ua = request.headers.get("User-Agent")
 
     # Log request details
@@ -28,10 +28,18 @@ def pixel():
     # Serve the transparent PNG
     return send_file("transparent.png", mimetype="image/png")
 
-# 👉 ADD THIS NEW ROUTE HERE
+# Debug route to show all headers
 @app.route("/debug")
 def debug():
     return dict(request.headers)
+
+# ⭐ NEW ROUTE: View the log file in the browser
+@app.route("/viewlog")
+def viewlog():
+    if not os.path.exists(LOG_FILE):
+        return "Log file does not exist yet."
+    with open(LOG_FILE, "r") as f:
+        return "<pre>" + f.read() + "</pre>"
 
 @app.route("/")
 def home():
