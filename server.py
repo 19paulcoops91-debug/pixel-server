@@ -9,7 +9,12 @@ LOG_FILE = "log.txt"
 @app.route("/pixel")
 def pixel():
     # Get real client IP (Render passes it in X-Forwarded-For)
-    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    ip = (
+    request.headers.get("True-Client-Ip")
+    or request.headers.get("Cf-Connecting-Ip")
+    or request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+    or request.remote_addr
+)
     ua = request.headers.get("User-Agent")
 
     # Log request details
